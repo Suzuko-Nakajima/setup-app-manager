@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+target_path=".pathfind"
+function permission_violation() {
+    echo ""
+    echo "User Status: Forbidden"
+    echo "[App Manager Setup] Permission Violation; cannot run as root. This is very dangerous, please run as a normal user."
+    echo ""
+    exit 13
+}
+
+function create_target_path() {
+    mkdir -p $HOME/$target_path && echo "Created path at: $HOME/$target_path" || exit 4
+    echo "export PATH=$PATH:$HOME/$target_path" >> $HOME/.bashrc
+    source $HOME/.bashrc
+}
+
+function download_and_setup_app_manager() {
+    download_uri="https://github.com/Suzuko-Nakajima/app-manager.git"
+    git clone $download_uri && cd ./app_manager
+    chmod 755 ./app-manager && ./app-manager --version
+    [[ -d $HOME/$target_path ]] && echo "Target path located." || create_target_path
+    mv ./app-manager $HOME/$target_path && source $HOME/.bashrc
+}
+
+function main() {
+    [[ "$(id -u)" -eq 0 ]] && permission_violation || echo "User Status: OK" # Fail with exit code 13 if ran as sudo, otherwise, print an "OK" status.
+    download_and_setup_app_manager
+}
+
+main
