@@ -17,7 +17,7 @@ function create_target_path() {
 
 function download_and_setup_app_manager() {
     download_uri="https://github.com/Suzuko-Nakajima/app-manager.git"
-    git clone $download_uri && cd ./app_manager
+    git clone $download_uri && cd ./app-manager
     chmod 755 ./app-manager && ./app-manager --version
     [[ -d $HOME/$target_path ]] && echo "Target path located." || create_target_path
     mv ./app-manager $HOME/$target_path && source $HOME/.bashrc
