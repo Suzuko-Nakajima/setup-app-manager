@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-target_path=".pathfind"
+target_path="$HOME/.pathfind"
 function permission_violation() {
     echo ""
     echo "User Status: Forbidden"
@@ -10,17 +10,20 @@ function permission_violation() {
 }
 
 function create_target_path() {
-    mkdir -p $HOME/$target_path && echo "Created path at: $HOME/$target_path" || exit 4
-    echo "export PATH=$PATH:$HOME/$target_path" >> $HOME/.bashrc
+    mkdir -p $target_path && echo "Created path at: $target_path" || exit 4
+    echo "export PATH=$PATH:$target_path" >> $HOME/.bashrc
     source $HOME/.bashrc
 }
 
 function download_and_setup_app_manager() {
+    echo "Please provide an absolute path. [Leave this space empty for the default '.pathfind' path in your home directory.]"
+    echo "Enter Path: "; read target_path; echo ""
+    [[ -z $target_path ]] && echo "[App Manager - Setup] Using default path." || echo "[App Manager - Setup] Using custom path."
     download_uri="https://github.com/Suzuko-Nakajima/app-manager.git"
     git clone $download_uri && cd ./app-manager
     chmod 755 ./app-manager && ./app-manager --version
-    [[ -d $HOME/$target_path ]] && echo "Target path located." || create_target_path
-    mv ./app-manager $HOME/$target_path && source $HOME/.bashrc
+    [[ -d $target_path ]] && echo "Target path located." || create_target_path
+    mv ./app-manager $target_path && source $HOME/.bashrc
 }
 
 function main() {
