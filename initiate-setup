@@ -29,7 +29,7 @@ function download_and_setup_app_manager() {
     git clone $download_uri && sleep 1
     cd ./app-manager; chmod 755 ./app-manager && ./app-manager --version
     [[ -d $target_path ]] && echo "Target path located." || create_target_path
-    mv ./app-manager $target_path && source $HOME/.bashrc
+    ln -fs $PWD/app-manager $target_path && source $HOME/.bashrc
 }
 
 function main() {
