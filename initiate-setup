@@ -15,16 +15,29 @@ function create_target_path() {
     source $HOME/.bashrc
 }
 
+function invalid_path() {
+    abs_path=$1
+    [[ -d "$abs_path" ]] && echo "[App Manager - Setup] PATH '$abs_path' was flagged as invalid, but DOES exist. This error should NOT be possible." || echo "[App Manager - Setup] PATH '$abs_path' is an invalid path or does not exist."
+    exit 4
+}
+
 function use_default_path() {
     target_path="$HOME/.pathfind"
-    echo "[App Manager - Setup] Using default PATH."
-    echo "[App Manager - Setup] PATH: $target_path"
+    echo "[App Manager - Setup] Using default PATH: $target_path" && echo ""
+    grep -i "KJ_APPMAN_DIR=" $HOME/.bashrc && echo "OK" || echo "KJ_APPMAN_DIR=$PWD/app-manager" >> $HOME/.bashrc
+}
+
+function use_custom_path() {
+    echo "Checking for valid path..."
+    [[ -d "$target_path" ]] && echo "[App Manager - Setup] OK, using custom PATH: $target_path" || invalid_path $target_path
+    grep -i "KJ_APPMAN_DIR=" $HOME/.bashrc && echo "OK" || echo "KJ_APPMAN_DIR=$PWD/app-manager" >> $HOME/.bashrc
+    echo ""
 }
 
 function download_and_setup_app_manager() {
     echo "Please provide an absolute path. [Leave this space empty for the default '.pathfind' path in your home directory.]"; echo "Enter Path: "
     read target_path
-    [[ -z $target_path ]] && use_default_path || echo "[App Manager - Setup] Using custom path."
+    [[ -z $target_path ]] && use_default_path || use_custom_path $target_path
     download_uri="https://github.com/Suzuko-Nakajima/app-manager.git"
     git clone $download_uri && sleep 1
     cd ./app-manager; chmod 755 ./app-manager && ./app-manager --version
