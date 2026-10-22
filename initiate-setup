@@ -38,6 +38,7 @@ function download_and_setup_app_manager() {
     echo "Please provide an absolute path. [Leave this space empty for the default '.pathfind' path in your home directory.]"; echo "Enter Path: "
     read target_path
     [[ -z $target_path ]] && use_default_path || use_custom_path $target_path
+    cd $HOME/.local/
     download_uri="https://github.com/Suzuko-Nakajima/app-manager.git"
     git clone $download_uri && sleep 1
     cd ./app-manager; chmod 755 ./app-manager && ./app-manager --version
